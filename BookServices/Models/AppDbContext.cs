@@ -12,26 +12,31 @@ namespace BookServices.Models
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Genre> Genres { get; set; }
+        public DbSet<BookGenre> BookGenres { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Book>()
                 .HasOne(b => b.Author)
                 .WithMany(a => a.Books)
-                .HasForeignKey(b => b.AuthorId);
+                .HasForeignKey(b => b.AuthorId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<BookGenre>()
                 .HasKey(bg => new { bg.BookId, bg.GenreId });
 
-            modelBuilder.Entity<BookGenre>()
-                .HasOne(bg => bg.Book)
-                .WithMany(b => b.BookGenres)
-                .HasForeignKey(bg => bg.BookId);
+            modelBuilder.Entity<Book>()
+                .HasMany(b => b.BookGenres)
+                .WithOne(bg => bg.Book)
+                .HasForeignKey(bg => bg.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<BookGenre>()
-                .HasOne(bg => bg.Genre)
-                .WithMany(g => g.BookGenres)
-                .HasForeignKey(bg => bg.GenreId);
+            modelBuilder.Entity<Genre>()
+                .HasMany(g => g.BookGenres)
+                .WithOne(bg => bg.Genre)
+                .HasForeignKey(bg => bg.GenreId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
         }
     }
 }
