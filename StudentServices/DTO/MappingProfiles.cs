@@ -7,7 +7,8 @@ namespace StudentServices.DTO
     {
         public MappingProfiles()
         {
-            CreateMap<Student, StudentDto>();
+            CreateMap<Student, StudentDto>()
+                .ForMember(dest => dest.Parent, opt => opt.MapFrom(src => src.Parent));
             CreateMap<Parent, ParentDto>();
         }
     }

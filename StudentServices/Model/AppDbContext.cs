@@ -17,7 +17,8 @@ namespace StudentServices.Model
             modelBuilder.Entity<Student>()
                 .HasOne(s => s.Parent)
                 .WithOne(p => p.Student)
-                .HasForeignKey<Parent>(p => p.Id);
+                .HasForeignKey<Parent>(p => p.Id)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
