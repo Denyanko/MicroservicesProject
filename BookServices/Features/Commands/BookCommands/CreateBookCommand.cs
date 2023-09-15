@@ -47,7 +47,7 @@ namespace BookServices.Features.Commands.BookCommands
                 }
 
                 _context.Books.Add(book);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return book.Id;
             }

@@ -21,7 +21,7 @@ namespace BookServices.Features.Commands.GenreCommands
                 var genre = new Genre { Name = command.Name };
 
                 _context.Genres.Add(genre);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return genre.Id;
             }

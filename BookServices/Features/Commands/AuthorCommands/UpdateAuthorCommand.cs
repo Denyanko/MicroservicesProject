@@ -27,7 +27,7 @@ namespace BookServices.Features.Commands.AuthorCommands
                 author.Name = command.Name;
                 author.Biography = command.Biography;
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return true;
             }

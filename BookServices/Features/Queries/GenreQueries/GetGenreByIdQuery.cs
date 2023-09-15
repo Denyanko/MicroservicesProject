@@ -26,7 +26,7 @@ namespace BookServices.Features.Queries.GenreQueries
                 var genre = await _context.Genres
                     .Include(g => g.BookGenres)
                         .ThenInclude(bg => bg.Book)
-                    .FirstOrDefaultAsync(g => g.Id == query.Id);
+                    .FirstOrDefaultAsync(g => g.Id == query.Id, cancellationToken);
 
                 return _mapper.Map<GenreDto>(genre);
             }

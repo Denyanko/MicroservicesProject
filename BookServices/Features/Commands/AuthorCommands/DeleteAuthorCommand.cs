@@ -23,7 +23,7 @@ namespace BookServices.Features.Commands.AuthorCommands
                 if (author == null) return false;
 
                 _context.Authors.Remove(author);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return true;
             }

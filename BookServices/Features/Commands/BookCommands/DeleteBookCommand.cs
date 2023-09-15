@@ -23,7 +23,7 @@ namespace BookServices.Features.Commands.BookCommands
                 if (book == null) return false;
 
                 _context.Books.Remove(book);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return true;
             }

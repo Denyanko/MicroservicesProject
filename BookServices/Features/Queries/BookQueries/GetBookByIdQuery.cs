@@ -27,7 +27,7 @@ namespace BookServices.Features.Queries.BookQueries
                     .Include(b => b.Author)
                     .Include(b => b.BookGenres)
                         .ThenInclude(bg => bg.Genre)
-                    .FirstOrDefaultAsync(b => b.Id == query.Id);
+                    .FirstOrDefaultAsync(b => b.Id == query.Id, cancellationToken);
 
                 return _mapper.Map<BookDto>(book);
             }

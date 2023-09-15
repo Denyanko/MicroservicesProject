@@ -25,7 +25,7 @@ namespace BookServices.Features.Commands.GenreCommands
 
                 genre.Name = command.Name;
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return true;
             }

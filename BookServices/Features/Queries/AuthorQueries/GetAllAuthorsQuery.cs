@@ -23,7 +23,7 @@ namespace BookServices.Features.Queries.AuthorQueries
             {
                 var authors = await _context.Authors
                     .Include(a => a.Books)
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken);
 
                 return _mapper.Map<List<AuthorDto>>(authors);
             }

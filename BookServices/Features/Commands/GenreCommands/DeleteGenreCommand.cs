@@ -23,7 +23,7 @@ namespace BookServices.Features.Commands.GenreCommands
                 if (genre == null) return false;
 
                 _context.Genres.Remove(genre);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return true;
             }

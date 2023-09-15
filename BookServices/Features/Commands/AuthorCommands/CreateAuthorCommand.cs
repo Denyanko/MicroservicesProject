@@ -26,7 +26,7 @@ namespace BookServices.Features.Commands.AuthorCommands
                 };
 
                 _context.Authors.Add(author);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
 
                 return author.Id;
             }

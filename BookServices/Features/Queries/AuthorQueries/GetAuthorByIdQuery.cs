@@ -25,7 +25,7 @@ namespace BookServices.Features.Queries.AuthorQueries
             {
                 var author = await _context.Authors
                     .Include(a => a.Books)
-                    .FirstOrDefaultAsync(a => a.Id == query.Id);
+                    .FirstOrDefaultAsync(a => a.Id == query.Id, cancellationToken);
 
                 return _mapper.Map<AuthorDto>(author);
             }
