@@ -1,5 +1,5 @@
-﻿using BookServices.Features.Commands.BookCommands;
-using BookServices.Features.Queries.BookQueries;
+﻿using BookServices.Features.Commands.AuthorCommands;
+using BookServices.Features.Queries.AuthorQueries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

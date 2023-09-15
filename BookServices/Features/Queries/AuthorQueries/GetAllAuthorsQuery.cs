@@ -4,7 +4,7 @@ using BookServices.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookServices.Features.Queries.BookQueries
+namespace BookServices.Features.Queries.AuthorQueries
 {
     public class GetAllAuthorsQuery : IRequest<List<AuthorDto>>
     {

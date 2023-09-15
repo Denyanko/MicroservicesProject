@@ -8,6 +8,7 @@ namespace BookServices.DTO
         public MappingProfiles() 
         {
             CreateMap<Author, AuthorDto>();
+            CreateMap<Genre, GenreDto>();
         }
     }
 }

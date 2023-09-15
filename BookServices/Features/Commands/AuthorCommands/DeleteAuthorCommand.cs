@@ -1,7 +1,7 @@
 ﻿using BookServices.Models;
 using MediatR;
 
-namespace BookServices.Features.Commands.BookCommands
+namespace BookServices.Features.Commands.AuthorCommands
 {
     public class DeleteAuthorCommand : IRequest<bool>
     {
