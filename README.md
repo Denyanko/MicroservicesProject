@@ -1,4 +1,4 @@
-# Mini Microservices Project README
+# Mini Microservices Project
 
 ## Overview
 
