@@ -1,5 +1,6 @@
 ﻿using BookServices.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookServices.Features.Commands.GenreCommands
 {
@@ -18,12 +19,36 @@ namespace BookServices.Features.Commands.GenreCommands
 
             public async Task<int> Handle(CreateGenreCommand command, CancellationToken cancellationToken)
             {
-                var genre = new Genre { Name = command.Name };
+                await using(var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
+                {
+                    try
+                    {
+                        var genre = new Genre { Name = command.Name };
 
-                _context.Genres.Add(genre);
-                await _context.SaveChangesAsync(cancellationToken);
+                        _context.Genres.Add(genre);
+                        await _context.SaveChangesAsync(cancellationToken);
 
-                return genre.Id;
+                        await transaction.CommitAsync(cancellationToken);
+
+                        return genre.Id;
+                    }catch(DbUpdateException ex)
+                    {
+                        Console.WriteLine($"Database update exception occurred while creating a genre: {ex.Message}");
+
+                        if(transaction != null) await transaction.RollbackAsync(cancellationToken);
+
+                        throw;
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine($"Error occured while creating a genre: {ex.Message}");
+
+                        if(transaction != null) await transaction.RollbackAsync(cancellationToken);
+
+                        throw;
+                    }
+                }
+                
             }
         }
     }

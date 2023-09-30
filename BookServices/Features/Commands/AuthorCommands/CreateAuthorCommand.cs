@@ -1,5 +1,6 @@
 ﻿using BookServices.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookServices.Features.Commands.AuthorCommands
 {
@@ -19,16 +20,40 @@ namespace BookServices.Features.Commands.AuthorCommands
 
             public async Task<int> Handle(CreateAuthorCommand command, CancellationToken cancellationToken)
             {
-                var author = new Author
+                await using(var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
                 {
-                    Name = command.Name,
-                    Biography = command.Biography
-                };
+                    try
+                    {
+                        var author = new Author
+                        {
+                            Name = command.Name,
+                            Biography = command.Biography,
+                        };
 
-                _context.Authors.Add(author);
-                await _context.SaveChangesAsync(cancellationToken);
+                        _context.Authors.Add(author);
+                        await _context.SaveChangesAsync(cancellationToken);
 
-                return author.Id;
+                        await transaction.CommitAsync(cancellationToken);
+
+                        return author.Id;
+                    }
+                    catch(DbUpdateException ex)
+                    {
+                        Console.WriteLine($"Database update occurred while creating an author: {ex.Message}");
+
+                        if(transaction != null) await transaction.RollbackAsync(cancellationToken);
+
+                        throw;
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine($"Error occurred while creating an author: {ex.Message}");
+
+                        if(transaction != null) await transaction.RollbackAsync(cancellationToken);
+
+                        throw;
+                    }
+                }
             }
         }
     }

@@ -22,34 +22,50 @@ namespace BookServices.Features.Commands.BookCommands
 
             public async Task<int> Handle(CreateBookCommand command, CancellationToken cancellationToken)
             {
-                var book = new Book
+                using(var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
                 {
-                    Title = command.Title,
-                    PublicationDate = command.PublicationDate,
-                    AuthorId = command.AuthorId,
-                };
-
-                if(command.GenreIds != null)
-                {
-                    var genres = await _context.Genres
-                        .Where(g => command.GenreIds.Contains(g.Id))
-                        .ToListAsync();
-
-                    if(book.BookGenres == null)
+                    try
                     {
-                        book.BookGenres = new List<BookGenre>();
+                        var book = new Book
+                        {
+                            Title = command.Title,
+                            PublicationDate = command.PublicationDate,
+                            AuthorId = command.AuthorId,
+                        };
+
+                        if (command.GenreIds != null)
+                        {
+                            var genres = await _context.Genres
+                                .Where(g => command.GenreIds.Contains(g.Id))
+                                .ToListAsync(cancellationToken);
+
+                            if (book.BookGenres == null)
+                            {
+                                book.BookGenres = new List<BookGenre>();
+                            }
+
+                            foreach (var genre in genres)
+                            {
+                                book.BookGenres.Add(new BookGenre { GenreId = genre.Id });
+                            }
+                        }
+
+                        _context.Books.Add(book);
+                        await _context.SaveChangesAsync(cancellationToken);
+
+                        await transaction.CommitAsync(cancellationToken);
+
+                        return book.Id;
                     }
-
-                    foreach (var genre in genres)
+                    catch(Exception ex) 
                     {
-                        book.BookGenres.Add(new BookGenre { GenreId = genre.Id});
+                        Console.WriteLine($"Error occurred while creating a book: {ex.Message}");
+
+                        if(transaction != null) await transaction.RollbackAsync(cancellationToken);
+
+                        throw;
                     }
                 }
-
-                _context.Books.Add(book);
-                await _context.SaveChangesAsync(cancellationToken);
-
-                return book.Id;
             }
         }
     }

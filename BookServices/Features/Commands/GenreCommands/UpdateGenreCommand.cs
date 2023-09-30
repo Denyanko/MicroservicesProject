@@ -1,5 +1,8 @@
-﻿using BookServices.Models;
+﻿using Microsoft.EntityFrameworkCore;
+
+3using BookServices.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookServices.Features.Commands.GenreCommands
 {
@@ -18,16 +21,40 @@ namespace BookServices.Features.Commands.GenreCommands
             }
 
             public async Task<bool> Handle(UpdateGenreCommand command, CancellationToken cancellationToken)
-            {
-                var genre = await _context.Genres.FindAsync(command.Id);
+            { 
+                await using(var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
+                {
+                    try
+                    {
+                        var genre = await _context.Genres.FindAsync(command.Id, cancellationToken);
 
-                if (genre == null) return false;
+                        if (genre == null) return false;
 
-                genre.Name = command.Name;
+                        genre.Name = command.Name;
 
-                await _context.SaveChangesAsync(cancellationToken);
+                        await _context.SaveChangesAsync(cancellationToken);
 
-                return true;
+                        await transaction.CommitAsync(cancellationToken);
+
+                        return true;
+                    }
+                    catch(DbUpdateException ex)
+                    {
+                        Console.WriteLine($"Database update exception occured while updating a genre: {ex.Message}");
+
+                        if(transaction != null) await transaction.RollbackAsync(cancellationToken);
+
+                        throw;
+                    }catch(Exception ex)
+                    {
+                        Console.WriteLine($"Error occurred while updating a genre: {ex.Message}");
+
+                        if (transaction != null) await transaction.RollbackAsync(cancellationToken);
+
+                        throw;
+                    }
+                }
+                
             }
         }
     }
