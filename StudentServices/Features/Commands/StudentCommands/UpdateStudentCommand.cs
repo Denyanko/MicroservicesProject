@@ -29,29 +29,53 @@ namespace StudentServices.Features.Commands.StudentCommands
 
             public async Task<bool> Handle(UpdateStudentCommand command, CancellationToken cancellationToken)
             {
-                var student = await _context.Students
-                    .Include(s => s.Parent)
-                    .FirstOrDefaultAsync(s => s.Id == command.StudentId, cancellationToken);
+                await using(var transaction = _context.Database.BeginTransaction(cancellationToken)) 
+                {
+                    try
+                    {
+                        var student = await _context.Students
+                            .Include(s => s.Parent)
+                            .FirstOrDefaultAsync(s => s.Id == command.StudentId, cancellationToken);
 
-                if (student == null) return false;
+                        if (student == null) return false;
 
-                student.Name = command.StudentName;
-                student.Address = command.StudentAddress;
-                student.Gender = command.StudentGender;
-                student.DOB = command.StudentDOB;
+                        student.Name = command.StudentName;
+                        student.Address = command.StudentAddress;
+                        student.Gender = command.StudentGender;
+                        student.DOB = command.StudentDOB;
 
-                if (student.Parent == null) student.Parent = new Parent();
+                        if (student.Parent == null) student.Parent = new Parent();
 
-                student.Parent.FatherName = command.FatherName;
-                student.Parent.FatherAddress = command.FatherAddress;
-                student.Parent.FatherPhone = command.FatherPhone;
-                student.Parent.MotherName = command.MotherName;
-                student.Parent.MotherAddress = command.MotherAddress;
-                student.Parent.MotherPhone = command.MotherPhone;
+                        student.Parent.FatherName = command.FatherName;
+                        student.Parent.FatherAddress = command.FatherAddress;
+                        student.Parent.FatherPhone = command.FatherPhone;
+                        student.Parent.MotherName = command.MotherName;
+                        student.Parent.MotherAddress = command.MotherAddress;
+                        student.Parent.MotherPhone = command.MotherPhone;
 
-                await _context.SaveChangesAsync(cancellationToken);
+                        await _context.SaveChangesAsync(cancellationToken);
 
-                return true;
+                        await transaction.CommitAsync(cancellationToken);
+
+                        return true;
+                    }
+                    catch(DbUpdateException ex)
+                    {
+                        Console.WriteLine($"Database update exception occurred while updating a student: {ex.Message}");
+
+                        if(transaction != null) await transaction.RollbackAsync(cancellationToken);
+
+                        throw;
+                    }catch (Exception ex) 
+                    {
+                        Console.Write($"Error occurred while updating a student: {ex.Message}");
+
+                        if(transaction != null) await transaction.RollbackAsync(cancellationToken);
+
+                        throw;
+                    }
+                }
+                
             }
         }
     }

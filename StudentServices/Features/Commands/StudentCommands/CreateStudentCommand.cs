@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using StudentServices.Model;
 
 namespace StudentServices.Features.Commands.StudentCommands
@@ -27,29 +28,52 @@ namespace StudentServices.Features.Commands.StudentCommands
 
             public async Task<int> Handle(CreateStudentCommand command, CancellationToken cancellationToken)
             {
-                var parent = new Parent
+                await using(var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
                 {
-                    FatherName = command.FatherName,
-                    FatherAddress = command.FatherAddress,
-                    FatherPhone = command.FatherPhone,
-                    MotherName = command.MotherName,
-                    MotherAddress = command.MotherAddress,
-                    MotherPhone = command.MotherPhone,
-                };
+                    try
+                    {
+                        var parent = new Parent
+                        {
+                            FatherName = command.FatherName,
+                            FatherAddress = command.FatherAddress,
+                            FatherPhone = command.FatherPhone,
+                            MotherName = command.MotherName,
+                            MotherAddress = command.MotherAddress,
+                            MotherPhone = command.MotherPhone,
+                        };
 
-                var student = new Student
-                {
-                    Name = command.StudentName,
-                    Address = command.StudentAddress,
-                    Gender = command.StudentGender,
-                    DOB = command.StudentDOB,
-                    Parent = parent,
-                };
+                        var student = new Student
+                        {
+                            Name = command.StudentName,
+                            Address = command.StudentAddress,
+                            Gender = command.StudentGender,
+                            DOB = command.StudentDOB,
+                            Parent = parent,
+                        };
 
-                _context.Students.Add(student);
-                await _context.SaveChangesAsync(cancellationToken);
+                        _context.Students.Add(student);
+                        await _context.SaveChangesAsync(cancellationToken);
 
-                return student.Id;
+                        await transaction.CommitAsync(cancellationToken);
+
+                        return student.Id;
+                    }
+                    catch(DbUpdateException ex)
+                    {
+                        Console.WriteLine($"Database update exception occured while creating a student: {ex.Message}");
+
+                        if(transaction != null) await transaction.RollbackAsync(cancellationToken);
+
+                        throw;
+                    }catch(Exception ex)
+                    {
+                        Console.WriteLine($"Error occurred while creating a student: {ex.Message}");
+
+                        if(transaction != null ) await transaction.RollbackAsync(cancellationToken);
+
+                        throw;
+                    }
+                }
             }
         }
     }
