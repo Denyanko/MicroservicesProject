@@ -29,7 +29,7 @@ namespace StudentServices.Features.Commands.StudentCommands
 
             public async Task<bool> Handle(UpdateStudentCommand command, CancellationToken cancellationToken)
             {
-                await using(var transaction = _context.Database.BeginTransaction(cancellationToken)) 
+                await using(var transaction = await _context.Database.BeginTransactionAsync(cancellationToken)) 
                 {
                     try
                     {
