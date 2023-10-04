@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookServices.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230914164548_RemoveBookGenreId")]
-    partial class RemoveBookGenreId
+    [Migration("20231004035842_AddingStudentIdColumnToStudentTable")]
+    partial class AddingStudentIdColumnToStudentTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,12 +57,18 @@ namespace BookServices.Migrations
                     b.Property<int>("AuthorId")
                         .HasColumnType("int");
 
+                    b.Property<int>("AvailableCopies")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PublicationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalCopies")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -83,7 +89,34 @@ namespace BookServices.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("BookGenre");
+                    b.ToTable("BookGenres");
+                });
+
+            modelBuilder.Entity("BookServices.Models.Borrowing", b =>
+                {
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("BorrowDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Returned")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ReturnedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("StudentId", "BookId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Borrowings");
                 });
 
             modelBuilder.Entity("BookServices.Models.Genre", b =>
@@ -101,6 +134,26 @@ namespace BookServices.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
+                });
+
+            modelBuilder.Entity("BookServices.Models.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("BookServices.Models.Book", b =>
@@ -133,6 +186,25 @@ namespace BookServices.Migrations
                     b.Navigation("Genre");
                 });
 
+            modelBuilder.Entity("BookServices.Models.Borrowing", b =>
+                {
+                    b.HasOne("BookServices.Models.Book", "Book")
+                        .WithMany("Borrowings")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookServices.Models.Student", "Student")
+                        .WithMany("Borrowings")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("BookServices.Models.Author", b =>
                 {
                     b.Navigation("Books");
@@ -141,11 +213,18 @@ namespace BookServices.Migrations
             modelBuilder.Entity("BookServices.Models.Book", b =>
                 {
                     b.Navigation("BookGenres");
+
+                    b.Navigation("Borrowings");
                 });
 
             modelBuilder.Entity("BookServices.Models.Genre", b =>
                 {
                     b.Navigation("BookGenres");
+                });
+
+            modelBuilder.Entity("BookServices.Models.Student", b =>
+                {
+                    b.Navigation("Borrowings");
                 });
 #pragma warning restore 612, 618
         }

@@ -13,6 +13,8 @@ namespace BookServices.Models
         public DbSet<Author> Authors { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<BookGenre> BookGenres { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Borrowing> Borrowings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,7 +38,21 @@ namespace BookServices.Models
                 .WithOne(bg => bg.Genre)
                 .HasForeignKey(bg => bg.GenreId)
                 .OnDelete(DeleteBehavior.Cascade);
-                
+
+            modelBuilder.Entity<Borrowing>()
+                .HasKey(br => new { br.StudentId, br.BookId });
+
+            modelBuilder.Entity<Book>()
+                .HasMany(b => b.Borrowings)
+                .WithOne(br => br.Book)
+                .HasForeignKey(br => br.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Student>()
+                .HasMany(s => s.Borrowings)
+                .WithOne(br => br.Student)
+                .HasForeignKey(br => br.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);   
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using MassTransit;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Shared.Model;
 using StudentServices.Model;
 
 namespace StudentServices.Features.Commands.StudentCommands
@@ -21,10 +23,12 @@ namespace StudentServices.Features.Commands.StudentCommands
         public class UpdateStudentCommandHandler : IRequestHandler<UpdateStudentCommand, bool>
         {
             private readonly AppDbContext _context;
+            private readonly IPublishEndpoint _publishEndpoint;
 
-            public UpdateStudentCommandHandler(AppDbContext context)
+            public UpdateStudentCommandHandler(AppDbContext context, IPublishEndpoint publishEndpoint)
             {
                 _context = context;
+                _publishEndpoint = publishEndpoint;
             }
 
             public async Task<bool> Handle(UpdateStudentCommand command, CancellationToken cancellationToken)
@@ -54,6 +58,12 @@ namespace StudentServices.Features.Commands.StudentCommands
                         student.Parent.MotherPhone = command.MotherPhone;
 
                         await _context.SaveChangesAsync(cancellationToken);
+
+                        await _publishEndpoint.Publish(new StudentUpdated
+                        {
+                            StudentId = student.Id,
+                            Name = student.Name,
+                        }, cancellationToken);
 
                         await transaction.CommitAsync(cancellationToken);
 

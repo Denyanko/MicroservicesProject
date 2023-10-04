@@ -9,7 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentServices", "StudentS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookServices", "BookServices\BookServices.csproj", "{E9AF9AAA-08E0-4DFA-B91B-BCB3F240BE65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Gateway", "Api.Gateway\Api.Gateway.csproj", "{484F1BE5-0DB1-4BA2-896B-64E19912B9D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Gateway", "Api.Gateway\Api.Gateway.csproj", "{484F1BE5-0DB1-4BA2-896B-64E19912B9D6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0B120EC9-C6B9-4249-A9BC-C1316CB33993}"
+	ProjectSection(SolutionItems) = preProject
+		Docker\docker-compose.yaml = Docker\docker-compose.yaml
+	EndProjectSection
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared", "Shared\Shared.shproj", "{9C063723-420C-4F0C-A490-0BBB74167EE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,5 +46,10 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1089F940-E9ED-4319-A7B2-52B1CF543C54}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Shared\Shared.projitems*{9c063723-420c-4f0c-a490-0bbb74167ee5}*SharedItemsImports = 13
+		Shared\Shared.projitems*{e7d6498f-9fb3-47b8-8d53-1597b42657fd}*SharedItemsImports = 5
+		Shared\Shared.projitems*{e9af9aaa-08e0-4dfa-b91b-bcb3f240be65}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
