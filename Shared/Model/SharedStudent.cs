@@ -6,18 +6,18 @@ namespace Shared.Model
 {
     public class StudentCreated
     {
-        public int StudentId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
     }
 
     public class StudentUpdated
     {
-        public int StudentId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
     }
 
     public class StudentDeleted
     {
-        public int StudentId { get; set; }
+        public int Id { get; set; }
     }
 }

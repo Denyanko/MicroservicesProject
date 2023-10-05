@@ -100,9 +100,6 @@ namespace BookServices.Migrations
                     b.Property<DateTime>("BorrowDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<bool>("Returned")
                         .HasColumnType("bit");
 
@@ -136,17 +133,11 @@ namespace BookServices.Migrations
             modelBuilder.Entity("BookServices.Models.Student", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

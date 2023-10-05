@@ -35,8 +35,8 @@ namespace StudentServices.Features.Commands.StudentCommands
                         await _context.SaveChangesAsync(cancellationToken);
 
                         await _publishEndpoint.Publish(new StudentDeleted
-                        {
-                            StudentId = student.Id,
+                        {   
+                            Id = student.Id,
                         }, cancellationToken);
 
                         await transaction.CommitAsync(cancellationToken);

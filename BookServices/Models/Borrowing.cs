@@ -1,8 +1,10 @@
-﻿namespace BookServices.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BookServices.Models
 {
     public class Borrowing
     {
-        public int Id { get; set; }
         public int StudentId { get; set; }
         public virtual Student Student { get; set; }
         public int BookId { get; set; }

@@ -42,8 +42,7 @@ namespace BookServices.Migrations
                 name: "Students",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -104,7 +103,6 @@ namespace BookServices.Migrations
                 {
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     BookId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
                     BorrowDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReturnedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Returned = table.Column<bool>(type: "bit", nullable: false)

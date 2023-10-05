@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookServices.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231004035842_AddingStudentIdColumnToStudentTable")]
-    partial class AddingStudentIdColumnToStudentTable
+    [Migration("20231005025054_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,9 +103,6 @@ namespace BookServices.Migrations
                     b.Property<DateTime>("BorrowDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<bool>("Returned")
                         .HasColumnType("bit");
 
@@ -139,17 +136,11 @@ namespace BookServices.Migrations
             modelBuilder.Entity("BookServices.Models.Student", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

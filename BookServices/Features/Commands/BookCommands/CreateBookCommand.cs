@@ -22,7 +22,7 @@ namespace BookServices.Features.Commands.BookCommands
 
             public async Task<int> Handle(CreateBookCommand command, CancellationToken cancellationToken)
             {
-                using(var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
+                await using(var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
                 {
                     try
                     {

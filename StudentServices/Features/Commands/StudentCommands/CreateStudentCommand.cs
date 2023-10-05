@@ -60,7 +60,7 @@ namespace StudentServices.Features.Commands.StudentCommands
 
                         await _publishEndpoint.Publish(new StudentCreated
                         {
-                            StudentId = student.Id,
+                            Id = student.Id,
                             Name = student.Name,
                         }, cancellationToken);
 

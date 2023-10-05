@@ -1,5 +1,6 @@
 ﻿using BookServices.Models;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Shared.Model;
 
 namespace BookServices.Consumer
@@ -15,16 +16,32 @@ namespace BookServices.Consumer
 
         public async Task Consume(ConsumeContext<StudentCreated> consumeContext)
         {
-            var student = new Student
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                StudentId = consumeContext.Message.StudentId,
-                Name = consumeContext.Message.Name,
-            };
+                try
+                {
+                    var student = new Student
+                    {
+                        Id = consumeContext.Message.Id,
+                        Name = consumeContext.Message.Name,
+                    };
+                    
+                    _context.Students.Add(student);
+                    await _context.SaveChangesAsync();
 
-            _context.Students.Add(student);
-            await _context.SaveChangesAsync();
+                    transaction.Commit();
 
-            await consumeContext.ConsumeCompleted;
+                    await consumeContext.ConsumeCompleted;
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"Error occurred while consuming student created message");
+
+                    if(transaction != null) transaction.Rollback();
+
+                    throw;
+                }
+            }
         }
     }
 }

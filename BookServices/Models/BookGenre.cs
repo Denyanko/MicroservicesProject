@@ -1,4 +1,7 @@
-﻿namespace BookServices.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BookServices.Models
 {
     public class BookGenre
     {

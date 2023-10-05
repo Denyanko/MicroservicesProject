@@ -61,7 +61,7 @@ namespace StudentServices.Features.Commands.StudentCommands
 
                         await _publishEndpoint.Publish(new StudentUpdated
                         {
-                            StudentId = student.Id,
+                            Id = student.Id,
                             Name = student.Name,
                         }, cancellationToken);
 

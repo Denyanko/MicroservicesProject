@@ -25,7 +25,8 @@ namespace BookServices.Models
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<BookGenre>()
-                .HasKey(bg => new { bg.BookId, bg.GenreId });
+                .HasKey(bg => new {bg.BookId, bg.GenreId });
+
 
             modelBuilder.Entity<Book>()
                 .HasMany(b => b.BookGenres)
@@ -39,8 +40,13 @@ namespace BookServices.Models
                 .HasForeignKey(bg => bg.GenreId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Student>()
+                .Property(s => s.Id)
+                .ValueGeneratedNever();
+
             modelBuilder.Entity<Borrowing>()
                 .HasKey(br => new { br.StudentId, br.BookId });
+
 
             modelBuilder.Entity<Book>()
                 .HasMany(b => b.Borrowings)
@@ -52,7 +58,9 @@ namespace BookServices.Models
                 .HasMany(s => s.Borrowings)
                 .WithOne(br => br.Student)
                 .HasForeignKey(br => br.StudentId)
-                .OnDelete(DeleteBehavior.Cascade);   
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

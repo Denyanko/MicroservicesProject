@@ -17,7 +17,7 @@ namespace BookServices.Consumer
         public async Task Consume(ConsumeContext<StudentDeleted> consumeContext)
         {
             var student = await _context.Students
-                .Where(s => s.StudentId == consumeContext.Message.StudentId)
+                .Where(s => s.Id == consumeContext.Message.Id)
                 .FirstAsync();
 
             if(student != null)
