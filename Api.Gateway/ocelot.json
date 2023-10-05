@@ -9,7 +9,7 @@
           "Port": 7202
         }
       ],
-      "UpstreamPathTemplate": "/students",
+      "UpstreamPathTemplate": "/api/students",
       "UpstreamHttpMethod": [ "Get", "Post" ]
     },
     {
@@ -21,7 +21,7 @@
           "Port": 7202
         }
       ],
-      "UpstreamPathTemplate": "/students/{id}",
+      "UpstreamPathTemplate": "/api/students/{id}",
       "UpstreamHttpMethod": [ "Get", "Put", "Delete" ]
     },
     {
@@ -33,7 +33,7 @@
           "Port": 7249
         }
       ],
-      "UpstreamPathTemplate": "/books/authors",
+      "UpstreamPathTemplate": "/api/authors",
       "UpstreamHttpMethod": [ "Get", "Post" ]
     },
     {
@@ -45,7 +45,7 @@
           "Port": 7249
         }
       ],
-      "UpstreamPathTemplate": "/books/authors/{id}",
+      "UpstreamPathTemplate": "/api/authors/{id}",
       "UpstreamHttpMethod": [ "Get", "Put", "Delete" ]
     },
     {
@@ -69,7 +69,7 @@
           "Port": 7249
         }
       ],
-      "UpstreamPathTemplate": "/books/{id}",
+      "UpstreamPathTemplate": "/api/books/{id}",
       "UpstreamHttpMethod": [ "Get", "Put", "Delete" ]
     },
     {
@@ -81,7 +81,7 @@
           "Port": 7249
         }
       ],
-      "UpstreamPathTemplate": "/books/genres",
+      "UpstreamPathTemplate": "/api/genres",
       "UpstreamHttpMethod": [ "Get", "Post" ]
     },
     {
@@ -93,8 +93,20 @@
           "Port": 7249
         }
       ],
-      "UpstreamPathTemplate": "/books/genres/{id}",
+      "UpstreamPathTemplate": "/api/genres/{id}",
       "UpstreamHttpMethod": [ "Get", "Put", "Delete" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/borrow-books",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7249
+        }
+      ],
+      "UpstreamPathTemplate": "/api/borrow-books",
+      "UpstreamHttpMethod": ["Get", "Post", "Put"]
     }
   ],
   "GlobalConfiguration": {}
